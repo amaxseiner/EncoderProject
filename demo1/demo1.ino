@@ -10,6 +10,8 @@
 #define pot_min_value 0
 #define pot_mid 512
 #define kp 1.75
+#define ki 0.01
+#define kd 0.2
 #define max_rads 22
 #define min_rads 0
 //errors
@@ -32,10 +34,13 @@ float T = .001;
 int r = 0;
 float dt = 0;
 int counter =0;
+float e = 0.0;
+//float ei = 0;
+float lastE = 0.0;
 
 float theta = 0.0;
 float thetaDis = 0.0;
-float vel = 0;
+float vel = 0.0;
 
 void setup() {
   pinMode(irSensor, INPUT);
@@ -55,17 +60,28 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   // digital write FIRST
+  double ei= 1.0;
   while(true){
     counter ++;
     thetaDis = (float)(max_rads - min_rads) * getPot(potPin);
     theta = getVelocity();  
-    vel = doControl(thetaDis,theta);
+    e = (float)(thetaDis - theta);
+    if( ei > 0.0)
+      ei = (float)e + (float)ei;
+    else
+      ei = e;
+    
+    vel = (float)((float)(ki * ei) + (float)(e * kp) + (float)(kd*(e - lastE)));
+    lastE = e;
+    //vel = doControlE(thetaDis,theta);
     powerMotor((float)abs(vel)/max_rads, motorLeft);
     if((counter % 300) == 0){
-      Serial.println("theta DIS " + String(thetaDis) + " rad/s");
-      Serial.println("recorded theta " + String(theta) + " rad/s");
-      //Serial.println("E: " + String(vel));
-      
+      //Serial.println("theta DIS " + String(thetaDis) + " rad/s");
+      //Serial.println("recorded theta " + String(theta) + " rad/s");
+      //Serial.println("ei " + String(ei));
+      //Serial.println("Vel " + String(vel));
+      //Serial.println("E: " + String(e));
+      Serial.println(String(thetaDis) + " " + String(theta));
     }
     delay(1);
   }  
@@ -87,9 +103,12 @@ float getVelocity(){
   return piii/dt;
 }
 
-float doControl(float thetaDis,float theta){
-  float e = (thetaDis - theta);
-  return (float)e*kp;
+float doControlE(float thetaDis,float theta){
+  e = (float)(thetaDis - theta);
+  //return eTemp;
+  //float newEi = (eTemp + ei);
+  //ei = newEi;
+  return (float)e; //+ //(ki* ei));
 }
 
 float getState(){
