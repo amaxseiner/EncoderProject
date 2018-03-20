@@ -1,3 +1,6 @@
+// Alex Maxseiner
+// PID controller
+
 #define irSensor 0
 #define motorLeft A6
 #define motorRight A1
