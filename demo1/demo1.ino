@@ -9,7 +9,7 @@
 #define pot_max_value 1023
 #define pot_min_value 0
 #define pot_mid 512
-#define kp 1.75
+#define kp 1.0
 #define ki 0.01
 #define kd 0.2
 #define max_rads 22
