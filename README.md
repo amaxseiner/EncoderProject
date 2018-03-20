@@ -1,2 +1,1 @@
-Motor Encoder Project code repository
-Code in this Repository is for Alex Maxseiner only.
+Motor Encoder Project code repository by Alex Maxseiner
